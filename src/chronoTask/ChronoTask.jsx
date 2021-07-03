@@ -1,5 +1,3 @@
-import { useEffect, useRef, useState } from "react"
-
 import Button from "@material-ui/core/Button"
 import Cancel from "@material-ui/icons/Cancel"
 import Card from "@material-ui/core/Card"
@@ -9,6 +7,8 @@ import CardHeader from "@material-ui/core/CardHeader"
 import PropTypes from "prop-types"
 import TextField from "@material-ui/core/TextField"
 import moment from "moment"
+import useInterval from "./useInterval"
+import { useState } from "react"
 
 export default function ChronoTask({
   id,
@@ -22,8 +22,8 @@ export default function ChronoTask({
 
   useInterval(() => {
     setCount(count + increment)
-    localStorage.setItem(`${title}-${id} count`, JSON.stringify(count))
-    localStorage.setItem(`${title}-${id} hour`, new Date().getTime())
+    // localStorage.setItem(`${title}-${id} count`, JSON.stringify(count))
+    // localStorage.setItem(`${title}-${id} hour`, new Date().getTime())
   }, 1000)
 
   return (
@@ -77,27 +77,6 @@ export default function ChronoTask({
 ChronoTask.propTypes = {
   description: PropTypes.string.isRequired,
   editable: PropTypes.bool.isRequired,
-  id: PropTypes.string.isRequired,
-  index: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-}
-
-function useInterval(callback, delay) {
-  const savedCallback = useRef()
-  // Se souvenir de la dernière fonction de rappel.
-  useEffect(() => {
-    savedCallback.current = callback
-  })
-
-  // Configurer l’intervalle.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current()
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay)
-      return () => clearInterval(id)
-    }
-  }, [delay])
 }
