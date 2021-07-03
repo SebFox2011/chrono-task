@@ -5,13 +5,21 @@ import Card from "@material-ui/core/Card"
 import CardContent from "@material-ui/core/CardContent"
 import CardHeader from "@material-ui/core/CardHeader"
 import ChronoTask from "./ChronoTask.jsx"
-import ObjectID from 'bson-objectid'
+import ObjectID from "bson-objectid"
 import PropTypes from "prop-types"
 
 export default function ChronoScreen() {
   const [chronosCards, setChronosCards] = useState([
-    { title: "Discussions", description: "Avec Jp", id: ObjectID().toHexString()},
-    { title: "Travail", description: "au boulot", id: ObjectID().toHexString() },
+    {
+      title: "Discussions",
+      description: "Avec Jp",
+      id: ObjectID().toHexString(),
+    },
+    {
+      title: "Travail",
+      description: "au boulot",
+      id: ObjectID().toHexString(),
+    },
   ])
 
   return (
@@ -22,6 +30,7 @@ export default function ChronoScreen() {
       >
         {chronosCards.map((card) => (
           <ChronoTask
+            key={card.id}
             id={card.id}
             title={card.title}
             description={card.description}
@@ -50,7 +59,6 @@ export default function ChronoScreen() {
   )
   function onDelete(id) {
     const newCard = chronosCards.filter((card) => card.id !== id)
-    
     setChronosCards(newCard)
     console.log("Appel OnDelete", newCard, id)
   }
