@@ -6,7 +6,6 @@ import CardContent from "@material-ui/core/CardContent"
 import CardHeader from "@material-ui/core/CardHeader"
 import ChronoTask from "./ChronoTask.jsx"
 import ObjectID from "bson-objectid"
-import PropTypes from "prop-types"
 
 export default function ChronoScreen() {
   const [chronosCards, setChronosCards] = useState([
@@ -32,8 +31,8 @@ export default function ChronoScreen() {
           <ChronoTask
             key={card.id}
             id={card.id}
-            title={card.title}
-            description={card.description}
+            titleDefault={card.title}
+            descriptionDefault={card.description}
             editable={card.editable}
             onDelete={onDelete}
           />
@@ -54,18 +53,12 @@ export default function ChronoScreen() {
           }
         />
       </CardContent>
-      {console.log("chronosCards", chronosCards)}
     </Card>
   )
   function onDelete(id) {
     const newCard = chronosCards.filter((card) => card.id !== id)
     setChronosCards(newCard)
-    console.log("Appel OnDelete", newCard, id)
+    localStorage.removeItem(`${id} count`)
+    localStorage.removeItem(`${id} hour`)
   }
-}
-
-ChronoScreen.propTypes = {
-  id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
 }

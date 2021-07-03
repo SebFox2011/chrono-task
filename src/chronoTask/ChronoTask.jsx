@@ -12,18 +12,39 @@ import { useState } from "react"
 
 export default function ChronoTask({
   id,
-  title,
-  description,
-  editable,
+  titleDefault,
+  descriptionDefault,
   onDelete,
 }) {
   const [count, setCount] = useState(0)
   const [increment, setIncrement] = useState(0)
+  const [title, setTitle] = useState(titleDefault || "")
+  const [description, setDescription] = useState(descriptionDefault || "")
+
+  function handleChange(event) {
+    if (event.target.id === "id-title") setTitle(event.target.value)
+    else if (event.target.id === "id-description")
+      setDescription(event.target.value)
+  }
 
   useInterval(() => {
     setCount(count + increment)
-    // localStorage.setItem(`${title}-${id} count`, JSON.stringify(count))
-    // localStorage.setItem(`${title}-${id} hour`, new Date().getTime())
+    localStorage.setItem(`${id} count`, JSON.stringify(count))
+    localStorage.setItem(`${id} hour`, new Date().getTime())
+    // localStorage.setItem(
+    //   "chronotask",
+    //   JSON.stringify({
+    //     ...localStorage.getItem("chronotask"),
+    //     [title]: JSON.stringify(count),
+    //   })
+    // )
+    // localStorage.setItem(
+    //   "chronotask",
+    //   JSON.stringify({
+    //     ...localStorage.getItem("chronotask"),
+    //     [id]: new Date().getTime(),
+    //   })
+    // )
   }, 1000)
 
   return (
@@ -35,10 +56,27 @@ export default function ChronoTask({
         </form>
       </CardHeader> */}
       <CardHeader
-        title={<TextField id="id-basic" value={title} />}
-        subheader={<TextField id="id-basic" value={description} />}
+        title={
+          <TextField
+            id="id-title"
+            label="Titre"
+            onChange={handleChange}
+            value={titleDefault || title}
+          />
+        }
+        subheader={
+          <TextField
+            id="id-description"
+            label="Description"
+            onChange={handleChange}
+            value={description}
+            multiline
+            rowsMax={4}
+          />
+        }
         avatar={
           <Cancel
+            color="secondary"
             onClick={() => {
               onDelete(id)
             }}
@@ -75,8 +113,7 @@ export default function ChronoTask({
 }
 
 ChronoTask.propTypes = {
-  description: PropTypes.string.isRequired,
-  editable: PropTypes.bool.isRequired,
+  descriptionDefault: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
+  titleDefault: PropTypes.string.isRequired,
 }
