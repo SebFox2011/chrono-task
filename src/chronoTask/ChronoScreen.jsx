@@ -10,6 +10,7 @@ import useStyles from "./style.styles.js"
 
 export default function ChronoScreen(props) {
   const classes = useStyles(props)
+  document.title = "Mes taches"
 
   const [chronosCards, setChronosCards] = useState([
     {
