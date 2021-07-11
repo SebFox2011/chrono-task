@@ -6,17 +6,20 @@ import CardContent from "@material-ui/core/CardContent"
 import CardHeader from "@material-ui/core/CardHeader"
 import ChronoTask from "./ChronoTask.jsx"
 import ObjectID from "bson-objectid"
+import useStyles from "./style.styles.js"
 
-export default function ChronoScreen() {
+export default function ChronoScreen(props) {
+  const classes = useStyles(props)
+
   const [chronosCards, setChronosCards] = useState([
     {
       title: "Discussions",
-      description: "Avec Jp",
+      description: "Avec Jean-Charles",
       id: ObjectID().toHexString(),
     },
     {
       title: "Travail",
-      description: "au boulot",
+      description: "Au boulot",
       id: ObjectID().toHexString(),
     },
   ])
@@ -27,7 +30,7 @@ export default function ChronoScreen() {
       <CardContent
         style={{ display: "flex", flexWrap: "wrap", alignItems: "center" }}
       >
-        {chronosCards.map((card) => (
+        {chronosCards.map((card, index) => (
           <ChronoTask
             key={card.id}
             id={card.id}
@@ -38,6 +41,7 @@ export default function ChronoScreen() {
           />
         ))}
         <AddCircle
+          className={classes.root}
           fontSize="large"
           color="secondary"
           onClick={() =>
