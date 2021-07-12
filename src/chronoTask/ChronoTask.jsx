@@ -10,12 +10,15 @@ import moment from "moment"
 import useInterval from "./useInterval"
 import { useState } from "react"
 import useStyles from "./style.styles"
+import React, {useEffect} from 'react'
 
 export default function ChronoTask({
   id,
   titleDefault,
   descriptionDefault,
   onDelete,
+  setSelected,
+  selected
 }) {
   const classes = useStyles()
   const [count, setCount] = useState(0)
@@ -28,6 +31,15 @@ export default function ChronoTask({
     else if (event.target.id === "id-description")
       setDescription(event.target.value)
   }
+  function handleClick(){
+    increment ===1 ? setIncrement(0) : setIncrement(1)
+    setSelected(id)
+  }
+
+
+  React.useEffect(() => {
+    selected ? setIncrement(1) : setIncrement(0)
+  }, [selected])
 
   useInterval(() => {
     setCount(count + increment)
@@ -36,7 +48,7 @@ export default function ChronoTask({
   }, 1000)
 
   return (
-    <Card style={{ width: "20em", margin: "2em" }}>
+    <Card elevation={selected ? 7:0}  variant={selected ? 'e':'outlined'} style={{ width: "20em", margin: "2em" }}>
       <CardHeader
         title={
           <TextField
@@ -78,7 +90,7 @@ export default function ChronoTask({
           color="primary"
           type="submit"
           variant="contained"
-          onClick={() => (increment === 1 ? setIncrement(0) : setIncrement(1))}
+          onClick={()=>handleClick()}
         >
           {increment === 1 ? "STOP" : "START"}
         </Button>
@@ -99,4 +111,6 @@ ChronoTask.propTypes = {
   descriptionDefault: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   titleDefault: PropTypes.string.isRequired,
+  setSelected: PropTypes.func.isRequired,
+  selected:PropTypes.bool.isRequired
 }

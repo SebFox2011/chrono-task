@@ -11,6 +11,7 @@ import useStyles from "./style.styles.js"
 export default function ChronoScreen(props) {
   const classes = useStyles(props)
   document.title = "Mes taches"
+  const [selected,setSelected] = useState(null)
 
   const [chronosCards, setChronosCards] = useState([
     {
@@ -24,6 +25,7 @@ export default function ChronoScreen(props) {
       id: ObjectID().toHexString(),
     },
   ])
+  console.log('id:',selected )
 
   return (
     <Card>
@@ -39,6 +41,8 @@ export default function ChronoScreen(props) {
             descriptionDefault={card.description}
             editable={card.editable}
             onDelete={onDelete}
+            setSelected={setSelected}
+            selected={selected===card.id}
           />
         ))}
         <AddCircle
