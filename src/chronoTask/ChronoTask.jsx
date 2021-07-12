@@ -1,16 +1,22 @@
+import React, { useEffect } from "react"
+
 import Button from "@material-ui/core/Button"
 import Cancel from "@material-ui/icons/Cancel"
 import Card from "@material-ui/core/Card"
 import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
 import CardHeader from "@material-ui/core/CardHeader"
+import Collapse from "@material-ui/core/Collapse"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import IconButton from "@material-ui/core/IconButton"
 import PropTypes from "prop-types"
 import TextField from "@material-ui/core/TextField"
+import Typography from "@material-ui/core/Typography"
+import clsx from "clsx"
 import moment from "moment"
 import useInterval from "./useInterval"
 import { useState } from "react"
 import useStyles from "./style.styles"
-import React, {useEffect} from 'react'
 
 export default function ChronoTask({
   id,
@@ -18,24 +24,31 @@ export default function ChronoTask({
   descriptionDefault,
   onDelete,
   setSelected,
-  selected
+  selected,
 }) {
   const classes = useStyles()
   const [count, setCount] = useState(0)
   const [increment, setIncrement] = useState(0)
   const [title, setTitle] = useState(titleDefault || "")
   const [description, setDescription] = useState(descriptionDefault || "")
+  const [expanded, setExpanded] = useState(false)
+  const [histories, setHistories] = useState([])
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded)
+  }
 
   function handleChange(event) {
     if (event.target.id === "id-title") setTitle(event.target.value)
     else if (event.target.id === "id-description")
       setDescription(event.target.value)
   }
-  function handleClick(){
-    increment ===1 ? setIncrement(0) : setIncrement(1)
-    setSelected(id)
-  }
 
+  function handleClick() {
+    increment === 1 ? setIncrement(0) : setIncrement(1)
+    setSelected(id)
+    setHistories([...histories, new Date()])
+  }
 
   React.useEffect(() => {
     selected ? setIncrement(1) : setIncrement(0)
@@ -48,7 +61,11 @@ export default function ChronoTask({
   }, 1000)
 
   return (
-    <Card elevation={selected ? 7:0}  variant={selected ? 'e':'outlined'} style={{ width: "20em", margin: "2em" }}>
+    <Card
+      elevation={selected ? 7 : 0}
+      variant={selected ? "e" : "outlined"}
+      style={{ width: "20em", margin: "2em" }}
+    >
       <CardHeader
         title={
           <TextField
@@ -90,7 +107,7 @@ export default function ChronoTask({
           color="primary"
           type="submit"
           variant="contained"
-          onClick={()=>handleClick()}
+          onClick={() => handleClick()}
         >
           {increment === 1 ? "STOP" : "START"}
         </Button>
@@ -102,7 +119,25 @@ export default function ChronoTask({
         >
           Reset
         </Button>
+        <IconButton
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded,
+          })}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </IconButton>
       </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Typography paragraph>Historique:</Typography>
+          {histories.map((history) => (
+            <Typography paragraph>{JSON.stringify(history.getTime())}</Typography>
+          ))}
+        </CardContent>
+      </Collapse>
     </Card>
   )
 }
@@ -112,5 +147,5 @@ ChronoTask.propTypes = {
   onDelete: PropTypes.func.isRequired,
   titleDefault: PropTypes.string.isRequired,
   setSelected: PropTypes.func.isRequired,
-  selected:PropTypes.bool.isRequired
+  selected: PropTypes.bool.isRequired,
 }
