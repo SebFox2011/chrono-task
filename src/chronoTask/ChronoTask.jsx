@@ -18,6 +18,7 @@ import useInterval from "./useInterval"
 import { useState } from "react"
 import useStyles from "./style.styles"
 
+moment.locale('fr')
 export default function ChronoTask({
   id,
   titleDefault,
@@ -51,8 +52,13 @@ export default function ChronoTask({
   }
 
   React.useEffect(() => {
-    selected ? setIncrement(1) : setIncrement(0)
-  }, [selected])
+    if (selected) {
+      document.title = `${title.slice(0, 20)}:  ${moment(count * 1000)
+        .utcOffset(0)
+        .format("HH:mm:ss")}`
+      setIncrement(1)
+    } else setIncrement(0)
+  }, [count, title, selected])
 
   useInterval(() => {
     setCount(count + increment)
@@ -132,10 +138,14 @@ export default function ChronoTask({
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Historique:</Typography>
+        <Typography paragraph>Historique:</Typography>
+          <div style={{height:'100px',overflowY:'auto'}}>
           {histories.map((history) => (
-            <Typography paragraph>{JSON.stringify(history.getTime())}</Typography>
+            <Typography paragraph>
+              {increment === 0? `Fin: ${moment(history).format('LLL')}`  : `Début: ${moment(history).format('LLL')}` }
+            </Typography>
           ))}
+          </div>
         </CardContent>
       </Collapse>
     </Card>
