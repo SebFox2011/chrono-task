@@ -1,3 +1,5 @@
+import 'moment/locale/fr'
+
 import React, { useEffect } from "react"
 
 import Button from "@material-ui/core/Button"
@@ -18,7 +20,6 @@ import useInterval from "./useInterval"
 import { useState } from "react"
 import useStyles from "./style.styles"
 
-moment.locale('fr')
 export default function ChronoTask({
   id,
   titleDefault,
@@ -27,6 +28,7 @@ export default function ChronoTask({
   setSelected,
   selected,
 }) {
+  console.log('refresh')
   const classes = useStyles()
   const [count, setCount] = useState(0)
   const [increment, setIncrement] = useState(0)
@@ -46,9 +48,15 @@ export default function ChronoTask({
   }
 
   function handleClick() {
-    increment === 1 ? setIncrement(0) : setIncrement(1)
+    if (increment) {
+      setIncrement(0)
+      setHistories([...histories, `Fin: ${moment(new Date()).format("LLL")}`])
+    } else {
+      setIncrement(1)
+      setHistories([...histories, `Début: ${moment(new Date()).format("LLL")}`])
+    }
+
     setSelected(id)
-    setHistories([...histories, new Date()])
   }
 
   React.useEffect(() => {
@@ -138,13 +146,11 @@ export default function ChronoTask({
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-        <Typography paragraph>Historique:</Typography>
-          <div style={{height:'100px',overflowY:'auto'}}>
-          {histories.map((history) => (
-            <Typography paragraph>
-              {increment === 0? `Fin: ${moment(history).format('LLL')}`  : `Début: ${moment(history).format('LLL')}` }
-            </Typography>
-          ))}
+          <Typography paragraph>Historique:</Typography>
+          <div style={{ height: "100px", overflowY: "auto" }}>
+            {histories.map((history) => (
+              <Typography paragraph>{history}</Typography>
+            ))}
           </div>
         </CardContent>
       </Collapse>
