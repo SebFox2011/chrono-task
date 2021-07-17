@@ -1,4 +1,4 @@
-import 'moment/locale/fr'
+import "moment/locale/fr"
 
 import React, { useEffect } from "react"
 
@@ -28,12 +28,11 @@ export default function ChronoTask({
   setSelected,
   selected,
 }) {
-  console.log('refresh')
   const classes = useStyles()
   const [count, setCount] = useState(0)
   const [increment, setIncrement] = useState(0)
-  const [title, setTitle] = useState(titleDefault || "")
-  const [description, setDescription] = useState(descriptionDefault || "")
+  const [title, setTitle] = useState(titleDefault ?? "")
+  const [description, setDescription] = useState(descriptionDefault ?? "")
   const [expanded, setExpanded] = useState(false)
   const [histories, setHistories] = useState([])
 
@@ -41,13 +40,14 @@ export default function ChronoTask({
     setExpanded(!expanded)
   }
 
-  function handleChange(event) {
+  const handleChange = (event) => {
     if (event.target.id === "id-title") setTitle(event.target.value)
     else if (event.target.id === "id-description")
       setDescription(event.target.value)
   }
 
-  function handleClick() {
+  const handleClick = (event) => {
+    setSelected(id)
     if (increment) {
       setIncrement(0)
       setHistories([...histories, `Fin: ${moment(new Date()).format("LLL")}`])
@@ -55,35 +55,35 @@ export default function ChronoTask({
       setIncrement(1)
       setHistories([...histories, `Début: ${moment(new Date()).format("LLL")}`])
     }
-
-    setSelected(id)
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selected) {
       document.title = `${title.slice(0, 20)}:  ${moment(count * 1000)
         .utcOffset(0)
         .format("HH:mm:ss")}`
       setIncrement(1)
     } else setIncrement(0)
-  }, [count, title, selected])
+  }, [id, count, title, selected])
 
   useInterval(() => {
     setCount(count + increment)
-    localStorage.setItem(`${id} count`, JSON.stringify(count))
-    localStorage.setItem(`${id} hour`, new Date().getTime())
   }, 1000)
+
+  console.log("render")
 
   return (
     <Card
+      id={`id-card-${id}`}
       elevation={selected ? 7 : 0}
-      variant={selected ? "e" : "outlined"}
+      variant={selected ? null : "outlined"}
       style={{ width: "20em", margin: "2em" }}
     >
       <CardHeader
+        id={`id-card-header-${id}`}
         title={
           <TextField
-            id="id-title"
+            id={`id-title-${id}`}
             label="Titre"
             onChange={handleChange}
             value={titleDefault || title}
@@ -91,7 +91,7 @@ export default function ChronoTask({
         }
         subheader={
           <TextField
-            id="id-description"
+            id={`id-description-${id}`}
             label="Description"
             onChange={handleChange}
             value={description}
@@ -101,6 +101,7 @@ export default function ChronoTask({
         }
         avatar={
           <Cancel
+            id={`id-cancel-${id}`}
             className={classes.root}
             color="secondary"
             onClick={() => {
@@ -118,14 +119,16 @@ export default function ChronoTask({
       </CardContent>
       <CardActions style={{ display: "flex", justifyContent: "center" }}>
         <Button
+          id={`id-start-stop-${id}`}
           color="primary"
           type="submit"
           variant="contained"
-          onClick={() => handleClick()}
+          onClick={handleClick}
         >
           {increment === 1 ? "STOP" : "START"}
         </Button>
         <Button
+          id={`id-reset-${id}`}
           color="secondary"
           type="submit"
           variant="contained"
@@ -134,6 +137,7 @@ export default function ChronoTask({
           Reset
         </Button>
         <IconButton
+          id={`id-expand-${id}`}
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
           })}

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import AddCircle from "@material-ui/icons/AddCircle"
 import Card from "@material-ui/core/Card"
@@ -10,22 +10,40 @@ import useStyles from "./style.styles.js"
 
 export default function ChronoScreen(props) {
   const classes = useStyles(props)
-  document.title = "Mes taches"
-  const [selected,setSelected] = useState(null)
+  document.title = "Chrono Tasks"
+  const [selected, setSelected] = useState(null)
 
   const [chronosCards, setChronosCards] = useState([
     {
-      title: "Discussions",
-      description: "Avec Jean-Charles",
+      title: "Réunions",
+      description: "Daily meeting",
       id: ObjectID().toHexString(),
     },
     {
       title: "Travail",
-      description: "Au boulot",
+      description: "Temps d'écution des tests",
       id: ObjectID().toHexString(),
     },
   ])
-  console.log('id:',selected )
+
+  const onDelete = (id) => {
+    const newCard = chronosCards.filter((card) => card.id !== id)
+    setChronosCards(newCard)
+  }
+
+  const addChronoCard = () =>
+    setChronosCards([
+      ...chronosCards,
+      {
+        title: "",
+        description: "",
+        id: ObjectID().toHexString(),
+      },
+    ])
+
+  useEffect(() => {
+    localStorage.setItem("chrono-tasks", JSON.stringify(chronosCards))
+  }, [chronosCards])
 
   return (
     <Card>
@@ -39,35 +57,19 @@ export default function ChronoScreen(props) {
             id={card.id}
             titleDefault={card.title}
             descriptionDefault={card.description}
-            editable={card.editable}
             onDelete={onDelete}
             setSelected={setSelected}
-            selected={selected===card.id}
+            selected={selected === card.id}
           />
         ))}
         <AddCircle
           className={classes.root}
           fontSize="large"
           color="secondary"
-          onClick={() =>
-            setChronosCards([
-              ...chronosCards,
-              {
-                title: "",
-                description: "",
-                editable: true,
-                id: ObjectID().toHexString(),
-              },
-            ])
-          }
+          onClick={addChronoCard}
         />
       </CardContent>
     </Card>
   )
-  function onDelete(id) {
-    const newCard = chronosCards.filter((card) => card.id !== id)
-    setChronosCards(newCard)
-    localStorage.removeItem(`${id} count`)
-    localStorage.removeItem(`${id} hour`)
-  }
+  
 }
