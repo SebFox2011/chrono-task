@@ -41,8 +41,8 @@ export default function ChronoTask({
   }
 
   const handleChange = (event) => {
-    if (event.target.id === "id-title") setTitle(event.target.value)
-    else if (event.target.id === "id-description")
+    if (event.target.id === `id-title-${id}`) setTitle(event.target.value)
+    else if (event.target.id === `id-description-${id}`)
       setDescription(event.target.value)
   }
 
@@ -86,7 +86,7 @@ export default function ChronoTask({
             id={`id-title-${id}`}
             label="Titre"
             onChange={handleChange}
-            value={titleDefault || title}
+            value={title}
           />
         }
         subheader={
