@@ -11,4 +11,4 @@ Il permet de selectionner une tache et par appui sur start de lancer le temps et
 L'application peut etre lancée depuis l'url suivante: https://chronotache.lazuryte.fr/
 ## V1.0
 
-    Version multi-chrono
+ Version multi-chrono
